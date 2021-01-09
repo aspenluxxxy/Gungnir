@@ -16,7 +16,12 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-use pqcrypto::sign::{falcon1024, falcon512};
+use ed25519_dalek::{ed25519::signature::Signature, Signer, Verifier};
+use gungnir_core::{SignatureAlgorithm, SignatureSlot};
+use pqcrypto::{
+	prelude::*,
+	sign::{falcon1024, falcon512},
+};
 use zeroize::Zeroize;
 
 pub enum Keypair {
@@ -34,33 +39,96 @@ pub enum Keypair {
 	},
 }
 
+impl Keypair {
+	pub fn sign(&self, data: &[u8]) -> Option<SignatureSlot> {
+		match self {
+			Keypair::Ed25519 {
+				public, private, ..
+			} => private.as_ref().map(|secret| {
+				let keypair = ed25519_dalek::Keypair {
+					public: ed25519_dalek::PublicKey::from_bytes(public.as_bytes()).unwrap(),
+					secret: ed25519_dalek::SecretKey::from_bytes(secret.as_bytes()).unwrap(),
+				};
+
+				let signature = keypair.sign(data).to_bytes().to_vec();
+				SignatureSlot {
+					algorithm: SignatureAlgorithm::Ed25519,
+					public_key_digest: *blake3::hash(public.as_bytes()).as_bytes(),
+					signature_len: signature.len(),
+					signature,
+				}
+			}),
+			Keypair::Falcon512 { public, private } => private.as_ref().map(|secret| {
+				let signature = falcon512::sign(data, &*secret).as_bytes().to_vec();
+				SignatureSlot {
+					algorithm: SignatureAlgorithm::Falcon512,
+					public_key_digest: *blake3::hash(public.as_bytes()).as_bytes(),
+					signature_len: signature.len(),
+					signature,
+				}
+			}),
+			Keypair::Falcon1024 { public, private } => private.as_ref().map(|secret| {
+				let signature = falcon1024::sign(data, &*secret).as_bytes().to_vec();
+				SignatureSlot {
+					algorithm: SignatureAlgorithm::Falcon512,
+					public_key_digest: *blake3::hash(public.as_bytes()).as_bytes(),
+					signature_len: signature.len(),
+					signature,
+				}
+			}),
+		}
+	}
+
+	pub fn verify(&self, data: &[u8], signature: &[u8]) -> bool {
+		match self {
+			Keypair::Ed25519 { public, .. } => public
+				.verify(
+					data,
+					&ed25519_dalek::Signature::from_bytes(signature).unwrap(),
+				)
+				.is_ok(),
+			Keypair::Falcon512 { public, .. } => falcon512::verify_detached_signature(
+				&falcon512::DetachedSignature::from_bytes(signature).unwrap(),
+				data,
+				&**public,
+			)
+			.is_ok(),
+			Keypair::Falcon1024 { public, .. } => falcon1024::verify_detached_signature(
+				&falcon1024::DetachedSignature::from_bytes(signature).unwrap(),
+				data,
+				&**public,
+			)
+			.is_ok(),
+		}
+	}
+}
+
 impl Zeroize for Keypair {
 	fn zeroize(&mut self) {
 		match self {
-			Keypair::Ed25519 { public, private } => {
-				let public: &mut ed25519_dalek::PublicKey = public.as_mut();
-				*public = unsafe { core::mem::zeroed() };
-				if let Some(private) = private {
-					let private: &mut ed25519_dalek::SecretKey = private.as_mut();
-					*private = unsafe { core::mem::zeroed() };
+			Keypair::Ed25519 { private, .. } => {
+				if let Some(private) = private.as_mut() {
+					private.zeroize();
 				}
 			}
 			Keypair::Falcon512 { public, private } => {
-				let public: &mut falcon512::PublicKey = public.as_mut();
-				*public = unsafe { core::mem::zeroed() };
-				if let Some(private) = private {
-					let private: &mut falcon512::SecretKey = private.as_mut();
-					*private = unsafe { core::mem::zeroed() };
+				public.zeroize();
+				if let Some(private) = private.as_mut() {
+					private.zeroize();
 				}
 			}
 			Keypair::Falcon1024 { public, private } => {
-				let public: &mut falcon1024::PublicKey = public.as_mut();
-				*public = unsafe { core::mem::zeroed() };
-				if let Some(private) = private {
-					let private: &mut falcon1024::SecretKey = private.as_mut();
-					*private = unsafe { core::mem::zeroed() };
+				public.zeroize();
+				if let Some(private) = private.as_mut() {
+					private.zeroize();
 				}
 			}
 		}
+	}
+}
+
+impl Drop for Keypair {
+	fn drop(&mut self) {
+		self.zeroize();
 	}
 }
