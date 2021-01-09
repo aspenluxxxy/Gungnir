@@ -1,0 +1,18 @@
+[package]
+name = "gungnir"
+version = "0.1.0"
+authors = ["aspen <aspenuwu@protonmail.com>"]
+license = "LGPL-3.0"
+edition = "2018"
+keywords = ["signature", "signing", "codesigning", "codesign", "hash"]
+categories = ["cryptography"]
+
+[dependencies]
+gungnir-core = { path = "../gungnir-core" }
+sha2 = "0.9"
+sha3 = "0.9"
+blake3 = "0.3"
+ed25519-dalek = "1.0"
+pqcrypto-falcon = "0.2"
+pqcrypto-traits = "0.3"
+rand = "0.7"

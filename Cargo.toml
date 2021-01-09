@@ -1,0 +1,15 @@
+[workspace]
+members = [
+	"gungnir",
+	"gungnir-cli",
+	"gungnir-core"
+]
+
+[profile.release]
+opt-level = 3
+codegen-units = 1
+lto = true
+
+[profile.release.package.'*']
+opt-level = 3
+codegen-units = 1

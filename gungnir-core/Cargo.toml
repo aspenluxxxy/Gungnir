@@ -1,0 +1,11 @@
+[package]
+name = "gungnir-core"
+version = "0.1.0"
+authors = ["aspen <aspenuwu@protonmail.com>"]
+license = "MPL-2.0"
+edition = "2018"
+keywords = ["signature", "signing", "codesigning", "codesign", "hash"]
+categories = ["cryptography", "data-structures"]
+
+[dependencies]
+deku = "0.9"
