@@ -10,6 +10,8 @@ use deku::prelude::*;
 #[derive(Debug, Clone, PartialEq, DekuRead, DekuWrite)]
 pub struct SignatureSlot {
 	pub algorithm: SignatureAlgorithm,
+	#[deku(endian = "little")]
+	pub public_key_digest: [u8; 32],
 	#[deku(endian = "little", update = "self.signature.len()")]
 	pub signature_len: usize,
 	#[deku(endian = "little", count = "signature_len")]

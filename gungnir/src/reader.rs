@@ -16,11 +16,12 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-use blake3::Hasher;
+use crate::hasher::Hasher;
 use gungnir_core::GungnirSignature;
 use sha2::{Digest, Sha384, Sha512};
 
 /// Reads
 pub struct FileSignatureReader<'a> {
 	sig: &'a GungnirSignature,
+	hasher: Hasher,
 }
