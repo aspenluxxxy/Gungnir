@@ -16,11 +16,12 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-use crate::hasher::Hasher;
-use gungnir_core::GungnirSignature;
-
-/// Reads
-pub struct FileSignatureReader<'a> {
-	sig: &'a GungnirSignature,
-	hasher: Hasher,
+#[derive(Debug, Clone, thiserror::Error)]
+pub enum Error {
+	#[error("invalid key: {0}")]
+	InvalidKey(String),
+	#[error("invalid signature: {0}")]
+	InvalidSignature(String),
+	#[error("keypair does not contain private key")]
+	NoPrivateKey,
 }

@@ -16,6 +16,11 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+pub mod error;
 pub mod hasher;
 pub mod keypair;
 pub mod reader;
+
+pub use error::Error;
+
+pub type Result<T> = std::result::Result<T, Error>;

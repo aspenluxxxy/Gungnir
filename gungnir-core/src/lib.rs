@@ -15,7 +15,7 @@ pub use deku;
 use deku::prelude::*;
 
 #[derive(Debug, Clone, PartialEq, DekuRead, DekuWrite)]
-#[deku(magic = b"GUNGNIR")]
+#[deku(magic = b"GUNGNIR\x42")]
 pub struct GungnirSignature {
 	#[deku(endian = "little")]
 	pub version: u8,

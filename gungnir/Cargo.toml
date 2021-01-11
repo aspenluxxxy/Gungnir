@@ -13,6 +13,6 @@ sha2 = "0.9"
 sha3 = "0.9"
 blake3 = "0.3"
 ed25519-dalek = "1.0"
-pqcrypto = { git = "https://github.com/aspenluxxxy/pqcrypto", rev = "bc818896d9cb018fb5d200a09cc96817c641a0ea", default-features = false, features = ["pqcrypto-falcon", "zeroize"] }
+pqcrypto = { version = "0.12", default-features = false, features = ["pqcrypto-falcon"] }
 rand = "0.7"
-zeroize = { version = "1.2", features = ["zeroize_derive"] }
+thiserror = "1.0"
