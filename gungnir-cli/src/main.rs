@@ -18,16 +18,57 @@
 */
 
 use clap::Clap;
+use gungnir::core::SignatureAlgorithm;
 use std::path::PathBuf;
 
 #[derive(Debug, Clap)]
 pub struct CliArgs {
 	#[clap(parse(from_os_str))]
-	input: PathBuf,
-	#[clap(parse(from_os_str))]
 	output: PathBuf,
+	#[clap(subcommand)]
+	cmd: CliSubcmd,
+}
+
+#[derive(Debug, Clap)]
+pub enum CliSubcmd {
+	Generate {
+		#[clap(short, long)]
+		name: Option<String>,
+		#[clap(short, long)]
+		pronouns: Option<String>,
+		#[clap(short, long)]
+		email: Option<String>,
+		#[clap(short, long)]
+		comment: Option<String>,
+	},
 }
 
 fn main() {
 	let args: CliArgs = CliArgs::parse();
+	let mut rng = rand::thread_rng();
+	match args.cmd {
+		CliSubcmd::Generate {
+			name,
+			pronouns,
+			email,
+			comment,
+		} => {
+			let ad = gungnir::core::AssociatedData {
+				name,
+				pronouns,
+				email,
+				comment,
+			};
+			let pkp = gungnir::keypair::Keypair::new(SignatureAlgorithm::Ed25519);
+			let skp = gungnir::keypair::Keypair::new(SignatureAlgorithm::Falcon512);
+			let x = gungnir::core::keypair::Keypair {
+				algorithm: SignatureAlgorithm::Ed25519,
+				ad,
+				public_key_len: 0,
+				public_key: vec![],
+				private_key_len: 0,
+				private_key: vec![],
+			};
+		}
+	}
 }

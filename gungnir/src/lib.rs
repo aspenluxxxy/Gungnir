@@ -22,5 +22,6 @@ pub mod keypair;
 pub mod reader;
 
 pub use error::Error;
+pub use gungnir_core as core;
 
 pub type Result<T> = std::result::Result<T, Error>;

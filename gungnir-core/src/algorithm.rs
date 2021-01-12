@@ -5,10 +5,11 @@
 */
 
 use deku::prelude::*;
+use serde::{Deserialize, Serialize};
 
 #[repr(u8)]
 #[non_exhaustive]
-#[derive(Debug, Copy, Clone, Eq, PartialEq, DekuRead, DekuWrite)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, DekuRead, DekuWrite, Serialize, Deserialize)]
 #[deku(type = "u8", endian = "little")]
 pub enum SignatureAlgorithm {
 	/// The Ed25519 signature algorithm.
@@ -39,7 +40,7 @@ impl SignatureAlgorithm {
 
 #[repr(u8)]
 #[non_exhaustive]
-#[derive(Debug, Copy, Clone, Eq, PartialEq, DekuRead, DekuWrite)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, DekuRead, DekuWrite, Serialize, Deserialize)]
 #[deku(type = "u8", endian = "little")]
 pub enum HashAlgorithm {
 	/// The BLAKE3 hash function.

@@ -39,6 +39,33 @@ pub enum Keypair {
 }
 
 impl Keypair {
+	pub fn new(algo: SignatureAlgorithm) -> Self {
+		match algo {
+			SignatureAlgorithm::Ed25519 => {
+				let kp = ed25519_dalek::Keypair::generate(&mut rand::thread_rng());
+				Self::Ed25519 {
+					public: Box::new(kp.public),
+					private: Some(Box::new(kp.secret)),
+				}
+			}
+			SignatureAlgorithm::Falcon512 => {
+				let (pub_key, priv_key) = falcon512::keypair();
+				Self::Falcon512 {
+					public: Box::new(pub_key),
+					private: Some(Box::new(priv_key)),
+				}
+			}
+			SignatureAlgorithm::Falcon1024 => {
+				let (pub_key, priv_key) = falcon1024::keypair();
+				Self::Falcon1024 {
+					public: Box::new(pub_key),
+					private: Some(Box::new(priv_key)),
+				}
+			}
+			_ => unimplemented!(),
+		}
+	}
+
 	pub fn sign(&self, data: &[u8]) -> crate::Result<SignatureSlot> {
 		let (algorithm, public_key_digest, signature) = match self {
 			Keypair::Ed25519 {

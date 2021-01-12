@@ -4,12 +4,15 @@
    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+pub mod ad;
 pub mod algorithm;
-pub mod slot;
+pub mod keypair;
+pub mod signature;
 
 pub use crate::{
+	ad::AssociatedData,
 	algorithm::{HashAlgorithm, SignatureAlgorithm},
-	slot::SignatureSlot,
+	signature::SignatureSlot,
 };
 pub use deku;
 use deku::prelude::*;
