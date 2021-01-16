@@ -1,9 +1,5 @@
 [workspace]
-members = [
-	"gungnir",
-	"gungnir-cli",
-	"gungnir-core"
-]
+members = ["gungnir", "gungnir-cli"]
 
 [profile.release]
 opt-level = 3

@@ -1,7 +1,7 @@
 /*
-   This Source Code Form is subject to the terms of the Mozilla Public
-   License, v. 2.0. If a copy of the MPL was not distributed with this
-   file, You can obtain one at http://mozilla.org/MPL/2.0/.
+	This Source Code Form is subject to the terms of the Mozilla Public
+	License, v. 2.0. If a copy of the MPL was not distributed with this
+	file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 use deku::prelude::*;
@@ -19,11 +19,11 @@ pub enum SignatureAlgorithm {
 	/// The Falcon post-quantum signature algorithm (Falcon-512 variant).
 	/// For more info, see https://falcon-sign.info/
 	#[deku(id = "0x02")]
-	Falcon512 = 3,
+	Falcon512 = 2,
 	/// The Falcon post-quantum signature algorithm (Falcon-1024 variant).
 	/// For more info, see https://falcon-sign.info/
 	#[deku(id = "0x03")]
-	Falcon1024 = 4,
+	Falcon1024 = 3,
 }
 
 impl SignatureAlgorithm {

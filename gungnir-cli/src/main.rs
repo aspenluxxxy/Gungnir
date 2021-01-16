@@ -1,24 +1,24 @@
 /*
-   Gungnir - Cross-platform executable signing
-   Copyright (C) 2021  aspen
+	Gungnir - Cross-platform algorithm: (), public_key: (), private_key: () executable signing
+	Copyright (C) 2021  aspen
 
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License along
-   with this program; if not, write to the Free Software Foundation, Inc.,
-   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+	You should have received a copy of the GNU General Public License along
+	with this program; if not, write to the Free Software Foundation, Inc.,
+	51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
 use clap::Clap;
-use gungnir::core::SignatureAlgorithm;
+use gungnir::core::{keypair::KeySlot, SignatureAlgorithm};
 use std::path::PathBuf;
 
 #[derive(Debug, Clap)]
@@ -62,12 +62,11 @@ fn main() {
 			let pkp = gungnir::keypair::Keypair::new(SignatureAlgorithm::Ed25519);
 			let skp = gungnir::keypair::Keypair::new(SignatureAlgorithm::Falcon512);
 			let x = gungnir::core::keypair::Keypair {
-				algorithm: SignatureAlgorithm::Ed25519,
 				ad,
-				public_key_len: 0,
-				public_key: vec![],
-				private_key_len: 0,
-				private_key: vec![],
+				keys: vec![KeySlot {
+					algorithm: SignatureAlgorithm::Ed25519,
+					public_key,
+				}],
 			};
 		}
 	}
